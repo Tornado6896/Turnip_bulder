@@ -11,7 +11,7 @@ workdir="$(pwd)/turnip_workdir"
 ndkver="android-ndk-r29"
 ndk="$workdir/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
 sdkver="34"
-mesasrc="https://github.com/Tornado6896/MESA260306.git"
+mesasrc="https://github.com/Tornado6896/TurnipA825.git"
 srcfolder="A825"
 
 clear
@@ -61,7 +61,9 @@ prepare_workdir(){
 }
 
 build_lib_for_android(){
-	
+	echo "==== Сборка Mesa на ветке $1 ===="
+	git checkout origin/$1
+
 	# Настройка окружения для использования Clang из NDK
 	mkdir -p "$workdir/bin"
 	ln -sf "$ndk/clang" "$workdir/bin/cc"
@@ -130,8 +132,9 @@ EOF
 		--reconfigure
 
 	echo "Компиляция через Ninja (это займет время)..."
-	ninja -C build-android-aarch64 install
-
+	meson setup build
+	ninja -C build/
+	sudo ninja -C build/ install
 	if [ ! -f /tmp/turnip-$1/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
