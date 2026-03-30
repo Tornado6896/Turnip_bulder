@@ -12,7 +12,7 @@ sdkver="34"
 
 # Define Mesa version and download URL
 mesadir="mesa26"
-mesaver="https://github.com/Tornado6896/MESA26/archive/refs/heads/main.zip"
+mesaver="https://github.com/Tornado6896/MESA26.git"
 
 # Define working directories
 workdir="$(pwd)/turnip_workdir"         # Base directory for all operations
