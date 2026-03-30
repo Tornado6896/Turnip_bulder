@@ -73,12 +73,11 @@ unzip "$ndkdir".zip &> /dev/null
 #echo "Downloading Latest Mesa source ..." $'\n'
 #curl $mesaver --output "$mesadir".zip &> /dev/null
 echo "Клонирование исходного кода Mesa..."
-	git clone $mesaver --depth=1 --no-single-branch $mesa26
-	cd $mesa26
-clear
+	git clone $mesaver --depth=1 --no-single-branch $mesadir
+#clear
 
-echo "Extracting Mesa source..." $'\n'
-unzip "$mesadir".zip &> /dev/null
+#echo "Extracting Mesa source..." $'\n'
+#unzip "$mesadir".zip &> /dev/null
 cd $mesadir
 
 # Set NDK Clang bin directory
