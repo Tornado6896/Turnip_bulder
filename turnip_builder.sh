@@ -64,8 +64,7 @@ prepare_workdir(){
 
 
 build_lib_for_android(){
-	echo "==== Building Mesa on $1 branch ===="
-	git checkout origin/$1
+
 	#Workaround for using Clang as c compiler instead of GCC
 	mkdir -p "$workdir/bin"
 	ln -sf "$ndk/clang" "$workdir/bin/cc"
