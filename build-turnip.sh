@@ -5,22 +5,20 @@ green='\033[0;32m'
 red='\033[0;31m'
 nocolor='\033[0m'
 
+# Define Android NDK version and download URL
+ndkdir="android-ndk-r30-beta1"
+#ndkver="https://dl.google.com/android/repository/${ndkdir}-linux.zip"
+sdkver="34"
 
 # Define Mesa version and download URL
 mesadir="mesa-mesa-26.0.3"
 #mesaver="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-26.0.3/mesa-mesa-26.0.3.zip?ref_type=tags"
 #mesaver="https://github.com/whitebelyash/mesa-tu8"
-mesasrc="https://github.com/Tornado6896/mesa_26_03"
+mesasrc="https://github.com/Tornado6896/mesa_26_03.git"
 
 # Define working directories
 workdir="$(pwd)/turnip_workdir"         # Base directory for all operations
 magiskdir="$workdir/turnip_module"      # Directory to create the Magisk module
-
-
-# Define Android NDK version and download URL
-ndkdir="$workdir/android-ndk-r30-beta1"
-#ndkver="https://dl.google.com/android/repository/${ndkdir}-linux.zip"
-sdkver="34"
 
 DRIVER_FILE="vulkan.turnip.so"          # Output Vulkan Driver (emulator)
 META_FILE="meta.json"                   # Metadata
@@ -55,11 +53,11 @@ sleep 1.5
 clear
 
 # Clean work directory if it exists
-#if [ -d "$workdir" ]; then
-    #echo "Work directory already exists. Cleaning before proceeding..." $'\n'
-    #rm -rf "$workdir"
-    #sleep 2
-#fi
+if [ -d "$workdir" ]; then
+    echo "Work directory already exists. Cleaning before proceeding..." $'\n'
+    rm -rf "$workdir"
+    sleep 2
+fi
 
 echo "Creating and entering the work directory..." $'\n'
 mkdir -p "$workdir" && cd "$_"
@@ -68,7 +66,7 @@ mkdir -p "$workdir" && cd "$_"
 #echo "Downloading Android NDK..." $'\n'
 #curl $ndkver --output "$ndkdir".zip &> /dev/null
 
-#lear
+c#lear
 
 #echo "Extracting Android NDK..." $'\n'
 #unzip "$ndkdir".zip &> /dev/null
@@ -81,11 +79,11 @@ echo "Downloading Latest Mesa source ..." $'\n'
 
 #echo "Extracting Mesa source..." $'\n'
 #unzip "$mesadir".zip &> /dev/null
-git clone $mesasrc $mesadir &> /dev/null
+git clone $mesasrc --depth=1 --no-single-branch $mesadir
 cd $mesadir
 
 # Set NDK Clang bin directory
-ndk_bin="$ndkdir/toolchains/llvm/prebuilt/linux-x86_64/bin"
+ndk_bin="$workdir/$ndkdir/toolchains/llvm/prebuilt/linux-x86_64/bin"
 
 # Set toolchain variables
 export CC=clang
@@ -142,12 +140,8 @@ endian = 'little'
 EOF
 
 echo "Generating build files..." $'\n'
-cd $mesadir
-#meson build-android-aarch64 
-#--cross-file android-aarch64 -Dbuildtype=release -Dplatforms=android -Dplatform-sdk-version=31 -Dandroid-stub=true -Dgallium-drivers= -Dvulkan-drivers=freedreno -Dfreedreno-kgsl=true -Db_lto=true
 CC=clang CXX=clang++ meson setup build-android-aarch64 \
-   --cross-file "$workdir/$mesadir/android-aarch64.txt" \
-   #--cross-file android-aarch64 \
+    --cross-file "$workdir/$mesadir/android-aarch64.txt" \
     --native-file "$workdir/$mesadir/native.txt" \
     -Dbuildtype=release \
     -Dplatforms=android \
@@ -155,7 +149,7 @@ CC=clang CXX=clang++ meson setup build-android-aarch64 \
     -Dandroid-stub=true \
     -Dgallium-drivers= \
     -Dvulkan-drivers=freedreno \
-    -Dfreedreno-kmds=true \
+    -Dfreedreno-kmds=kgsl \
     -Db_lto=true \
     -Db_lto_mode=thin \
     -Degl=disabled \
