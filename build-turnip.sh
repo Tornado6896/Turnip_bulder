@@ -81,40 +81,35 @@ echo "Extracting Mesa source..." $'\n'
 cd $mesadir
 
 # Set NDK Clang bin directory
-ndk_bin="$workdir/$ndkdir/toolchains/llvm/prebuilt/linux-x86_64/bin"
+ndk="$workdir/$ndkdir/toolchains/llvm/prebuilt/linux-x86_64/bin"
 
 # Set toolchain variables
-export CC=clang
-export CXX=clang++
-export AR=llvm-ar
-export RANLIB=llvm-ranlib
-export STRIP=llvm-strip
-export OBJDUMP=llvm-objdump
-export OBJCOPY=llvm-objcopy
-export LDFLAGS="-fuse-ld=lld"
+mkdir -p "$workdir/bin"
+	ln -sf "$ndk/clang" "$workdir/bin/cc"
+	ln -sf "$ndk/clang++" "$workdir/bin/c++"
+	export PATH="$workdir/bin:$ndk:$PATH"
+	export CC=clang
+	export CXX=clang++
+	export AR=llvm-ar
+	export RANLIB=llvm-ranlib
+	export STRIP=llvm-strip
+	export OBJDUMP=llvm-objdump
+	export OBJCOPY=llvm-objcopy
+	export LDFLAGS="-fuse-ld=lld"
+	#GITHASH=$(git rev-parse --short HEAD)
 
-# Create a temporary directory for fake cc/c++
-fakecc_dir="$workdir/fake-cc"
-mkdir -p "$fakecc_dir"
-
-# Create symbolic links to NDK-Clang
-ln -sf "$ndk_bin/clang" "$fakecc_dir/cc"
-ln -sf "$ndk_bin/clang++" "$fakecc_dir/c++"
-
-# Prepend both fake-cc and NDK bin to PATH
-export PATH="$fakecc_dir:$ndk_bin:$PATH"
 
 echo "Creating Meson cross file..." $'\n'
 
 cat <<EOF >"android-aarch64.txt"
 [binaries]
-ar = '$ndk_bin/llvm-ar'
-c = ['ccache', '$ndk_bin/aarch64-linux-android$sdkver-clang', '-Wno-deprecated-declarations', '-Wno-gnu-alignof-expression']
-cpp = ['ccache', '$ndk_bin/aarch64-linux-android$sdkver-clang++', '--start-no-unused-arguments', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error=c++11-narrowing', '-Wno-deprecated-declarations', '-Wno-gnu-alignof-expression']
-c_ld = '$ndk_bin/ld.lld'
-cpp_ld = '$ndk_bin/ld.lld'
-strip = '$ndk_bin/aarch64-linux-android-strip'
-pkg-config = ['env', 'PKG_CONFIG_LIBDIR=NDKDIR/pkg-config', '/usr/bin/pkg-config']
+ar = '$ndk/llvm-ar'
+c = ['ccache', '$ndk/aarch64-linux-android$sdkver-clang']
+cpp = ['ccache', '$ndk/aarch64-linux-android$sdkver-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
+c_ld = '$ndk/ld.lld'
+cpp_ld = '$ndk/ld.lld'
+strip = '$ndk/llvm-strip'
+pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$ndk/pkg-config', '/usr/bin/pkg-config']
 
 [host_machine]
 system = 'android'
@@ -155,7 +150,7 @@ CC=clang CXX=clang++ meson setup build-android-aarch64 \
 
 # Compile build files using Ninja
 echo "Compiling build files..." $'\n'
-ninja -C build-android-aarch64 &> "$workdir"/ninja_log
+ninja -C build-android-aarch64 install &> "$workdir"/ninja_log
 
 echo "Using patchelf to match .so name..." $'\n'
 cp "$workdir"/"$mesadir"/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"
