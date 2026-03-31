@@ -115,7 +115,7 @@ EOF
 	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
-		--prefix /tmp/turnip-$1 \
+		--prefix $workdir/turnip-$1 \
 		-Dbuildtype=release \
 		-Db_lto=false \
 		-Dstrip=true \
@@ -133,14 +133,14 @@ EOF
 		--reconfigure
 
 	echo "Компиляция через Ninja (это займет время)..."
-	ninja -C build-android-aarch64 install
+	ninja -C build-android-aarch64
 
-	if [ ! -f /tmp/turnip-$1/lib/libvulkan_freedreno.so ]; then
+	if [ ! -f $workdir/turnip-$1/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
 
 	echo "Создание архива с драйвером..."
-	cd /tmp/turnip-$1/lib
+	cd $workdir/turnip-$1/lib
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
@@ -155,11 +155,11 @@ EOF
 }
 EOF
 	# ИСПРАВЛЕНО: имя архива совпадает с ожидаемым в YAML
-	zip /tmp/A825_T-V$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip $workdir/A825_T-V$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f /tmp/A825_T-V$BUILD_VERSION.zip ]; then
-		echo -e "$green Архив успешно создан: /tmp/A825_T-V$BUILD_VERSION.zip $nocolor"
+	if [ -f $workdir/A825_T-V$BUILD_VERSION.zip ]; then
+		echo -e "$green Архив успешно создан: $workdir/A825_T-V$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
 	fi
