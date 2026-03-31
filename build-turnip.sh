@@ -14,7 +14,7 @@ sdkver="34"
 mesadir="mesa-mesa-26.0.3"
 #mesaver="https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-26.0.3/mesa-mesa-26.0.3.zip?ref_type=tags"
 #mesaver="https://github.com/whitebelyash/mesa-tu8"
-mesasrc="https://github.com/whitebelyash/mesa-tu8"
+mesasrc="https://github.com/Tornado6896/mesa_26_03"
 
 # Define working directories
 workdir="$(pwd)/turnip_workdir"         # Base directory for all operations
