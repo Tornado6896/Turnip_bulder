@@ -53,8 +53,7 @@ prepare_workdir(){
 	unzip -q "$ndkver"-linux.zip &> /dev/null
 
 	echo "Клонирование исходного кода Mesa..."
-	#git clone $mesasrc --depth=1 --no-single-branch $srcfolder
-	git clone $mesasrc $srcfolder
+	git clone $mesasrc --depth=1 --no-single-branch $srcfolder
 	cd $srcfolder
 	
 	echo "Запись версии TU..."
@@ -115,7 +114,7 @@ EOF
 	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
-		--prefix $workdir/turnip-$1 \
+		--prefix /tmp/turnip-$1 \
 		-Dbuildtype=release \
 		-Db_lto=false \
 		-Dstrip=true \
@@ -133,20 +132,20 @@ EOF
 		--reconfigure
 
 	echo "Компиляция через Ninja (это займет время)..."
-	ninja -C build-android-aarch64
+	ninja -C build-android-aarch64 install
 
-	if [ ! -f $workdir/turnip-$1/lib/libvulkan_freedreno.so ]; then
+	if [ ! -f /tmp/turnip-$1/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
 
 	echo "Создание архива с драйвером..."
-	cd $workdir/turnip-$1/lib
+	cd /tmp/turnip-$1/lib
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
-  "name": "A825 T-$BUILD_VERSION",
+  "name": "A8XX T-$BUILD_VERSION",
   "description": "Сборка для Adreno 825. Ветка: $1",
-  "author": "Tornado6896,
+  "author": "whitebelyash / DVD_Disk / Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
   "driverVersion": "Vulkan 1.4.335",
@@ -155,11 +154,11 @@ EOF
 }
 EOF
 	# ИСПРАВЛЕНО: имя архива совпадает с ожидаемым в YAML
-	zip $workdir/A825_T-V$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip /tmp/A825_T-V$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f $workdir/A825_T-V$BUILD_VERSION.zip ]; then
-		echo -e "$green Архив успешно создан: $workdir/A825_T-V$BUILD_VERSION.zip $nocolor"
+	if [ -f /tmp/A825_T-V$BUILD_VERSION.zip ]; then
+		echo -e "$green Архив успешно создан: /tmp/A825_T-V$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
 	fi
