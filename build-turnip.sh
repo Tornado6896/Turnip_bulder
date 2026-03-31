@@ -53,11 +53,11 @@ sleep 1.5
 clear
 
 # Clean work directory if it exists
-if [ -d "$workdir" ]; then
-    echo "Work directory already exists. Cleaning before proceeding..." $'\n'
-    rm -rf "$workdir"
-    sleep 2
-fi
+#if [ -d "$workdir" ]; then
+    #echo "Work directory already exists. Cleaning before proceeding..." $'\n'
+    #rm -rf "$workdir"
+    #sleep 2
+#fi
 
 echo "Creating and entering the work directory..." $'\n'
 mkdir -p "$workdir" && cd "$_"
