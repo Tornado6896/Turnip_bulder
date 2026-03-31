@@ -154,7 +154,7 @@ meson setup build-android-aarch64 \
 
 # Compile build files using Ninja
 echo "Compiling build files..." $'\n'
-ninja -C build-android-aarch64 install &> "$workdir"/ninja_log
+ninja -C build &> "$workdir"/ninja_log
 
 echo "Using patchelf to match .so name..." $'\n'
 cp "$workdir"/"$mesadir"/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so "$workdir"
