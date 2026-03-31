@@ -67,8 +67,8 @@ build_lib_for_android(){
 
 	#Workaround for using Clang as c compiler instead of GCC
 	mkdir -p "$workdir/bin"
-	ln -sf "$ndk/clang" "$workdir/bin/cc"
-	ln -sf "$ndk/clang++" "$workdir/bin/c++"
+	ln -sf "$ndk" "$workdir/bin/cc"
+	ln -sf "$ndk" "$workdir/bin/c++"
 	export PATH="$workdir/bin:$ndk:$PATH"
 	export CC=clang
 	export CXX=clang++
