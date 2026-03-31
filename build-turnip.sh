@@ -79,7 +79,7 @@ echo "Downloading Latest Mesa source ..." $'\n'
 
 #echo "Extracting Mesa source..." $'\n'
 #unzip "$mesadir".zip &> /dev/null
-git clone $mesasrc --depth=1 --no-single-branch $mesadir
+git clone $mesasrc $mesadir
 cd $mesadir
 
 # Set NDK Clang bin directory
