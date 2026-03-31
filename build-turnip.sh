@@ -133,20 +133,24 @@ endian = 'little'
 EOF
 
 echo "Generating build files..." $'\n'
-CC=clang CXX=clang++ meson setup build-android-aarch64 \
-    --cross-file "$workdir/$mesadir/android-aarch64.txt" \
-    --native-file "$workdir/$mesadir/native.txt" \
-    -Dbuildtype=release \
-    -Dplatforms=android \
-    -Dplatform-sdk-version="$sdkver" \
-    -Dandroid-stub=true \
-    -Dgallium-drivers= \
-    -Dvulkan-drivers=freedreno \
-    -Dfreedreno-kmds=kgsl \
-    -Db_lto=true \
-    -Db_lto_mode=thin \
-    -Degl=disabled \
-    -Dstrip=true &> $workdir/meson_log
+meson setup build-android-aarch64 \
+			--cross-file "android-aarch64.txt" \
+			--native-file "native.txt" \
+			--prefix /tmp/turnip-$1 \
+			-Dbuildtype=release \
+			-Dstrip=true \
+			-Dplatforms=android \
+			-Dvideo-codecs= \
+			-Dplatform-sdk-version="$sdkver" \
+			-Dandroid-stub=true \
+			-Dgallium-drivers= \
+			-Dvulkan-drivers=freedreno \
+			-Dvulkan-beta=true \
+			-Dfreedreno-kmds=kgsl \
+			-Degl=disabled \
+			-Dplatform-sdk-version=36 \
+			-Dandroid-libbacktrace=disabled \
+			--reconfigure &> $workdir/meson_log
 
 # Compile build files using Ninja
 echo "Compiling build files..." $'\n'
