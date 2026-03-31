@@ -72,7 +72,7 @@ unzip "$ndkdir".zip &> /dev/null
 # Download Mesa source
 echo "Downloading Latest Mesa source ..." $'\n'
 #curl $mesaver --output "$mesadir".zip &> /dev/null
-git clone $mesaver &> /dev/null
+git clone $mesaver $mesadir &> /dev/null
 
 clear
 
