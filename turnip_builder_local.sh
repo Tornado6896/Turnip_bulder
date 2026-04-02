@@ -59,14 +59,13 @@ prepare_workdir(){
 	cd $srcfolder
 	
 	echo "Запись версии TU..."
-	echo "#define TUGEN8_DRV_VERSION \"v$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
+	echo "#define TUGEN8_DRV_VERSION \"v $BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 }
 
 build_lib_for_android(){
 	echo "==== Сборка Mesa на ветке $1 ===="
 	git checkout origin/$1
 
-	# Настройка окружения для использования Clang из NDK
 	mkdir -p "$workdir/bin"
 	ln -sf "$ndk/clang" "$workdir/bin/cc"
 	ln -sf "$ndk/clang++" "$workdir/bin/c++"
@@ -145,7 +144,7 @@ EOF
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
-  "name": "A8XX T-$BUILD_VERSION",
+  "name": "A825 T-$BUILD_VERSION",
   "description": "Сборка для Adreno 825. Ветка: $1",
   "author": "whitebelyash / DVD_Disk / Tornado6896",
   "packageVersion": "1",
@@ -155,11 +154,10 @@ EOF
   "libraryName": "libvulkan_freedreno.so"
 }
 EOF
-	# ИСПРАВЛЕНО: имя архива совпадает с ожидаемым в YAML
-	zip $workdir/A825_T-V$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip $workdir/A825_T-$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f $workdir/A825_T-V$BUILD_VERSION.zip ]; then
+	if [ -f $workdir/A825_T-$BUILD_VERSION.zip ]; then
 		echo -e "$green Архив успешно создан: $workdir/A825_T-V$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
