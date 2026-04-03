@@ -55,7 +55,7 @@ prepare_workdir(){
 	#unzip -q "$ndkver"-linux.zip &> /dev/null
 
 	echo "Клонирование исходного кода Mesa..."
-	git clone --branch A825 --depth=1 $mesasrc $srcfolder
+	git clone --branch $srcfolder --depth=1 $mesasrc $srcfolder
 	cd $srcfolder
 	
 	echo "Запись версии TU..."
@@ -63,7 +63,7 @@ prepare_workdir(){
 }
 
 build_lib_for_android(){
-	echo "==== Сборка Mesa на ветке $1 ===="
+	echo "==== Сборка Mesa на ветке $srcfolder ===="
 
 	mkdir -p "$workdir/bin"
 	ln -sf "$ndk/clang" "$workdir/bin/cc"
@@ -114,7 +114,7 @@ EOF
 	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
-		--prefix /tmp/turnip-$1 \
+		--prefix /tmp/turnip-$srcfolder \
 		-Dbuildtype=release \
 		-Db_lto=false \
 		-Dstrip=true \
@@ -133,17 +133,17 @@ EOF
 	echo "Компиляция через Ninja (это займет время)..."
 	ninja -C build-android-aarch64 install
 
-	if [ ! -f /tmp/turnip-$1/lib/libvulkan_freedreno.so ]; then
+	if [ ! -f /tmp/turnip-$srcfolder/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
 
 	echo "Создание архива с драйвером..."
-	cd /tmp/turnip-$1/lib
+	cd /tmp/turnip-$srcfolder/lib
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
   "name": "A825 T-$BUILD_VERSION",
-  "description": "Сборка для Adreno 825. Ветка: $1",
+  "description": "Сборка для Adreno 825. Ветка: $srcfolder",
   "author": "Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
