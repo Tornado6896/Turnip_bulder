@@ -8,9 +8,9 @@ nocolor='\033[0m'
 # Список необходимых зависимостей
 deps="git meson ninja patchelf unzip curl pip flex bison zip glslang glslangValidator"
 workdir="$(pwd)/turnip_workdir"
-ndkver="android-ndk-r31-beta1"
+ndkver="android-ndk-r30-beta1"
 ndk="$HOME/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
-sdkver="31"
+sdkver="35"
 mesasrc="https://github.com/Tornado6896/mesa-a825.git"
 srcfolder="A825"
 
