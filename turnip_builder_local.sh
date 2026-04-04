@@ -69,10 +69,10 @@ read -p "Введите номер сборки: " BUILD_VERSION
 clear
 
 run_all(){
-	echo "====== Начало сборки TU V$BUILD_VERSION! ======"
+	echo "====== Начало сборки TU V-$BUILD_VERSION! ======"
 	check_deps
 	prepare_workdir
-	build_lib_for_android AXXX
+	build_lib_for_android $srcfolder
 }
 
 check_deps(){
@@ -202,11 +202,11 @@ EOF
   "libraryName": "libvulkan_freedreno.so"
 }
 EOF
-	zip $workdir/$srcfolder_T-$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip $workdir/$srcfolder"_T-"$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f $workdir/$srcfolder_T-$BUILD_VERSION.zip ]; then
-		echo -e "$green Архив успешно создан: $workdir/$srcfolder_T-V$BUILD_VERSION.zip $nocolor"
+	if [ -f $workdir/$srcfolder"_T-V"$BUILD_VERSION.zip ]; then
+		echo -e "$green Архив успешно создан: $workdir/$srcfolder"_T-V"$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
 	fi
