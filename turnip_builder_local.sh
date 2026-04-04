@@ -12,8 +12,60 @@ ndkver="android-ndk-r30-beta1"
 ndk="$HOME/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
 sdkver="35"
 mesasrc="https://github.com/Tornado6896/mesa-tu8.git"
-srcfolder="a825"
 
+
+declare -A BRANCHES=(
+    [1]="A825"
+    [2]="A829"
+)
+
+# Функция отображения меню
+show_menu() {
+    echo "Доступные ветки для сборки драйвера:"
+    for key in "${!BRANCHES[@]}"; do
+        echo "  $key) ${BRANCHES[$key]}"
+    done
+}
+
+# Функция выбора ветки
+choose_branch() {
+    local branch_name=""
+    while [[ -z "$branch_name" ]]; do
+        show_menu
+        read -p "Введите номер или название ветки: " choice
+
+        # Проверка, является ли ввод номером
+        if [[ "$choice" =~ ^[0-9]+$ ]] && [[ -n "${BRANCHES[$choice]}" ]]; then
+            branch_name="${BRANCHES[$choice]}"
+        # Проверка, является ли ввод названием ветки
+        elif [[ "$choice" == "A825" || "$choice" == "A829" ]]; then
+            branch_name="$choice"
+        else
+            echo "Ошибка: неверный выбор. Пожалуйста, введите 1, 2, 825 или 829."
+            echo
+        fi
+    done
+
+    echo "Вы выбрали ветку: $branch_name"
+    read -p "Подтвердите выбор (y/n): " confirm
+    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+        echo "Выход."
+        exit 0
+    fi
+
+    # Экспортируем переменную для использования в других скриптах
+    export SELECTED_BRANCH="$branch_name"
+    echo "Переменная SELECTED_BRANCH установлена в '$SELECTED_BRANCH'"
+}
+
+# Запуск выбора
+choose_branch
+srcfolder="$choose_branch"
+# Здесь можно добавить действия, зависящие от выбранной ветки
+# Например, клонирование репозитория:
+# git clone -b "$SELECTED_BRANCH" https://github.com/ваш-репозиторий.git
+
+echo "Скрипт завершён."
 read -p "Введите номер сборки: " BUILD_VERSION
 
 clear
@@ -22,7 +74,7 @@ run_all(){
 	echo "====== Начало сборки TU V$BUILD_VERSION! ======"
 	check_deps
 	prepare_workdir
-	build_lib_for_android A825
+	build_lib_for_android AXXX
 }
 
 check_deps(){
@@ -142,8 +194,8 @@ EOF
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
-  "name": "A825 T-$BUILD_VERSION",
-  "description": "Сборка для Adreno 825. Ветка: $srcfolder",
+  "name": "$srcfolder T-$BUILD_VERSION",
+  "description": "Сборка для Adreno $srcfolder. Ветка: $srcfolder",
   "author": "Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
@@ -152,11 +204,11 @@ EOF
   "libraryName": "libvulkan_freedreno.so"
 }
 EOF
-	zip $workdir/A825_T-$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip $workdir/$srcfolder_T-$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f $workdir/A825_T-$BUILD_VERSION.zip ]; then
-		echo -e "$green Архив успешно создан: $workdir/A825_T-V$BUILD_VERSION.zip $nocolor"
+	if [ -f $workdir/$srcfolder_T-$BUILD_VERSION.zip ]; then
+		echo -e "$green Архив успешно создан: $workdir/$srcfolder_T-V$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
 	fi
