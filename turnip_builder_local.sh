@@ -12,7 +12,7 @@ ndkver="android-ndk-r30-beta1"
 ndk="$HOME/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
 sdkver="35"
 mesasrc="https://github.com/Tornado6896/mesa-tu8.git"
-
+srcfolder="$SELECTED_BRANCH"
 
 declare -A BRANCHES=(
     [1]="a825"
@@ -60,12 +60,8 @@ choose_branch() {
 
 # Запуск выбора
 choose_branch
-srcfolder="$choose_branch"
-# Здесь можно добавить действия, зависящие от выбранной ветки
-# Например, клонирование репозитория:
-# git clone -b "$SELECTED_BRANCH" https://github.com/ваш-репозиторий.git
 
-echo "Скрипт завершён."
+
 read -p "Введите номер сборки: " BUILD_VERSION
 
 clear
