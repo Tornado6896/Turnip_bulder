@@ -15,8 +15,8 @@ mesasrc="https://github.com/Tornado6896/mesa-tu8.git"
 
 
 declare -A BRANCHES=(
-    [1]="A825"
-    [2]="A829"
+    [1]="a825"
+    [2]="a829"
 )
 
 # Функция отображения меню
