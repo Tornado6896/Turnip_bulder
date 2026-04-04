@@ -47,11 +47,13 @@ choose_branch() {
     done
 
     echo "Вы выбрали ветку: $branch_name"
-    """read -p "Подтвердите выбор (y/n): " confirm
-    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-        echo "Выход."
-        exit 0
-    fi"""
+	
+	# read -p "Подтвердите выбор (y/n): " confirm
+    # if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    #     echo "Выход."
+    #     exit 0
+    # fi 
+	
 SELECTED_BRANCH="$branch_name"
 
     echo "Переменная SELECTED_BRANCH установлена в '$SELECTED_BRANCH'"
