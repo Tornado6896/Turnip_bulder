@@ -23,7 +23,7 @@ declare -A BRANCHES=(
 show_menu() {
     echo "Доступные ветки для сборки драйвера:"
     for key in "${!BRANCHES[@]}"; do
-        echo "$key) ${BRANCHES[$key]}"
+        echo "$key ${BRANCHES[$key]}"
     done | sort -k1 -n
 }
 
@@ -48,6 +48,15 @@ choose_branch() {
 
     echo "Вы выбрали ветку: $branch_name"
 	
+	# read -p "Подтвердите выбор (y/n): " confirm
+    # if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    #     echo "Выход."
+    #     exit 0
+    # fi 
+	
+#SELECTED_BRANCH="$branch_name"
+srcfolder="$branch_name"
+   # echo "Переменная SELECTED_BRANCH установлена в '$SELECTED_BRANCH'"
 }
 
 # Запуск выбора
@@ -60,7 +69,7 @@ read -p "Введите номер сборки: " BUILD_VERSION
 clear
 
 run_all(){
-	echo "====== Начало сборки TU v$BUILD_VERSION ! ======"
+	echo "====== Начало сборки TU v-$BUILD_VERSION ! ======"
 	check_deps
 	prepare_workdir
 	build_lib_for_android $srcfolder
@@ -71,20 +80,20 @@ check_deps(){
 	for deps_chk in $deps; do
 		sleep 0.1
 		if command -v "$deps_chk" >/dev/null 2>&1 ; then
- 			echo -e "$green - $deps_chk найдено $nocolor"
- 		else
+			echo -e "$green - $deps_chk найдено $nocolor"
+		else
 			echo -e "$red - $deps_chk НЕ найдено, продолжение невозможно. $nocolor"
- 			deps_missing=1
- 		fi
- 	done
+			deps_missing=1
+		fi
+	done
 
- 	if [ "$deps_missing" == "1" ]; then 
- 		echo "Пожалуйста, установите недостающие пакеты." && exit 1
- 	fi
+	if [ "$deps_missing" == "1" ]; then 
+		echo "Пожалуйста, установите недостающие пакеты." && exit 1
+	fi
 
- 	echo "Установка зависимости python Mako..."
- 	pip install mako &> /dev/null
- }
+	echo "Установка зависимости python Mako..."
+	pip install mako &> /dev/null
+}
 
 prepare_workdir(){
 	echo "Подготовка рабочей директории..."
@@ -96,17 +105,11 @@ prepare_workdir(){
 	#unzip -q "$ndkver"-linux.zip &> /dev/null
 
 	echo "Клонирование исходного кода Mesa..."
-	# git clone $mesasrc --branch $srcfolder --depth=1 -$srcfolder
-	# #git clone --branch $mesasrc $srcfolder --depth=1 $srcfolder
-	# #git clone --branch $srcfolder $mesasrc $srcfolder
-	# cd $srcfolder
-
-	rm -rf "$srcfolder"
-    git clone --branch "$srcfolder" --depth 1 "$mesasrc" "$srcfolder"
-    cd "$srcfolder"
+	git clone --branch $srcfolder --depth=1 $mesasrc $srcfolder
+	cd $srcfolder
 	
 	echo "Запись версии TU..."
-	echo "#define TUGEN8_DRV_VERSION \"v$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
+	echo "#define TUGEN8_DRV_VERSION \"v $BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 }
 
 build_lib_for_android(){
@@ -158,7 +161,7 @@ endian = 'little'
 EOF
 
 	echo "Настройка Meson (LTO отключен для стабильности)..."
-	meson setup build-android-aarch64 -Dperfetto=true \
+	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
 		--prefix /tmp/turnip-$srcfolder \
