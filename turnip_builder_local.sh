@@ -23,7 +23,7 @@ declare -A BRANCHES=(
 show_menu() {
     echo "Доступные ветки для сборки драйвера:"
     for key in "${!BRANCHES[@]}"; do
-        echo "$key ${BRANCHES[$key]}"
+        echo "$key) ${BRANCHES[$key]}"
     done | sort -k1 -n
 }
 
@@ -48,15 +48,6 @@ choose_branch() {
 
     echo "Вы выбрали ветку: $branch_name"
 	
-	# read -p "Подтвердите выбор (y/n): " confirm
-    # if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-    #     echo "Выход."
-    #     exit 0
-    # fi 
-	
-#SELECTED_BRANCH="$branch_name"
-srcfolder="$branch_name"
-   # echo "Переменная SELECTED_BRANCH установлена в '$SELECTED_BRANCH'"
 }
 
 # Запуск выбора
@@ -161,7 +152,7 @@ endian = 'little'
 EOF
 
 	echo "Настройка Meson (LTO отключен для стабильности)..."
-	meson setup build-android-aarch64 \
+	meson setup build-android-aarch64 -Dperfetto=true \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
 		--prefix /tmp/turnip-$srcfolder \
