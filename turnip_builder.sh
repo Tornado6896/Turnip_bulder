@@ -177,9 +177,9 @@ EOF
 		-Dvulkan-drivers=freedreno \
 		-Dvulkan-beta=true \
 		-Dfreedreno-kmds=kgsl \
-		-Degl=enable \
+		-Degl=enabled \
 		-Dperfetto=true \
-		-Dandroid-libbacktrace=enable \
+		-Dandroid-libbacktrace=enabled \
 		--reconfigure
 
 	echo "Компиляция через Ninja (это займет время)..."
