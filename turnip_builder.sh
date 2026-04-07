@@ -165,7 +165,7 @@ EOF
 	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
-		--prefix /tmp/Turnip $srcfolder \
+		--prefix /tmp/Turnip-$srcfolder \
 		-Dbuildtype=release \
 		-Db_lto=true \
 		-Dstrip=true \
@@ -192,12 +192,12 @@ EOF
 	echo "Компиляция через Ninja (это займет время)..."
 	ninja -C build-android-aarch64 install
 
-	if [ ! -f /tmp/Turnip $srcfolder/lib/libvulkan_freedreno.so ]; then
+	if [ ! -f /tmp/Turnip-$srcfolder/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
 
 	echo "Создание архива с драйвером..."
-	cd /tmp/Turnip $srcfolder/lib
+	cd /tmp/Turnip-$srcfolder/lib
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
