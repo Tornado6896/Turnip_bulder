@@ -8,7 +8,7 @@ nocolor='\033[0m'
 # Список необходимых зависимостей (добавлен ccache)
 deps="git meson ninja patchelf unzip curl pip flex bison zip glslang glslangValidator ccache"
 workdir="$(pwd)"
-ndkver="android-ndk-r30-beta1"
+ndkver="android-ndk-r29"
 ndk="$HOME/$ndkver/toolchains/llvm/prebuilt/linux-x86_64/bin"
 sdkver="35"
 
@@ -16,7 +16,6 @@ sdkver="35"
 declare -A REPOS=(
     [1]="https://github.com/Tornado6896/mesa-tu8.git"
     [2]="https://github.com/Tornado6896/mesa-a8xx.git"
-	[3]="https://github.com/Tornado6896/mesa-new.git"
 )
 
 # Доступные ветки (зависят от репозитория, но для простоты оставим общие)
@@ -150,6 +149,7 @@ else
     echo "ccache не найден, компиляция будет без кэширования."
 fi
 
+
 cat <<EOF >"android-aarch64.txt"
 [binaries]
 ar = '$ndk/llvm-ar'
@@ -210,7 +210,27 @@ EOF
 
     echo "Создание архива с драйвером..."
     cd "/tmp/Turnip-$srcfolder/lib"
-    cat <<EOF >"meta.json"
+	
+   VULKAN_HEADER="$workdir/$srcfolder/include/vulkan/vulkan_core.h"
+
+# Извлекаем номер версии (например, 335)
+if [ -f "$VULKAN_HEADER" ]; then
+    VK_HEADER_VERSION=$(grep -oP '#define VK_HEADER_VERSION \K\d+' "$VULKAN_HEADER")
+    
+    if [ -n "$VK_HEADER_VERSION" ]; then
+        # Формируем версию "1.4.335"
+        VULKAN_VERSION="1.4.$VK_HEADER_VERSION"
+    else
+        echo "Не удалось определить VK_HEADER_VERSION. Используется версия по умолчанию."
+        VULKAN_VERSION="1.4.335"
+    fi
+else
+    echo "Файл vulkan_core.h не найден. Используется версия по умолчанию."
+    VULKAN_VERSION="1.4.335"
+fi
+
+# Используем полученную версию при создании meta.json
+cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
   "name": "Turnip $srcfolder $BUILD_VERSION",
@@ -218,11 +238,12 @@ EOF
   "author": "Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "Vulkan 1.4.335",
+  "driverVersion": "Vulkan $VULKAN_VERSION",
   "minApi": 28,
   "libraryName": "libvulkan_freedreno.so"
 }
 EOF
+
     # Исправленные кавычки для имени архива
     zip "$workdir/$srcfolder Turnip $BUILD_VERSION.zip" libvulkan_freedreno.so meta.json
     cd -
