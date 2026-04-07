@@ -16,6 +16,7 @@ sdkver="35"
 declare -A REPOS=(
     [1]="https://github.com/Tornado6896/mesa-tu8.git"
     [2]="https://github.com/Tornado6896/mesa-a8xx.git"
+	[3]="https://github.com/Tornado6896/mesa-new.git"
 )
 
 # Доступные ветки (зависят от репозитория, но для простоты оставим общие)
