@@ -69,7 +69,7 @@ read -p "Введите номер сборки: " BUILD_VERSION
 clear
 
 run_all(){
-	echo "====== Начало сборки TU v-$BUILD_VERSION ! ======"
+	echo "====== Начало сборки TU $BUILD_VERSION ! ======"
 	check_deps
 	prepare_workdir
 	build_lib_for_android $srcfolder
@@ -110,7 +110,7 @@ prepare_workdir(){
 	cd $srcfolder
 	
 	echo "Запись версии TU..."
-	echo "#define TUGEN8_DRV_VERSION \"v $BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
+	echo "#define TUGEN8_DRV_VERSION \"$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 }
 
 build_lib_for_android(){
@@ -165,37 +165,46 @@ EOF
 	meson setup build-android-aarch64 \
 		--cross-file "android-aarch64.txt" \
 		--native-file "native.txt" \
-		--prefix /tmp/turnip-$srcfolder \
+		--prefix /tmp/Turnip Adreno $srcfolder \
 		-Dbuildtype=release \
-		-Db_lto=false \
+		-Db_lto=true \
 		-Dstrip=true \
 		-Dplatforms=android \
 		-Dvideo-codecs=all \
 		-Dplatform-sdk-version="$sdkver" \
 		-Dandroid-stub=true \
-		-Dgallium-drivers= \
+		-Dgallium-drivers=freedreno \
 		-Dvulkan-drivers=freedreno \
 		-Dvulkan-beta=true \
 		-Dfreedreno-kmds=kgsl \
-		-Degl=disabled \
+		-Degl=enabled \
 		-Dperfetto=true \
 		-Dandroid-libbacktrace=enabled \
-		--reconfigure
+		-Dgbm=enabled \
+		-Dgles1=enabled \
+		-Dgles2=enabled \
+		-Dglx=dri \
+
+
+
+#===============================================================================
+# 8) Install built libraries from staging
+#=================
 
 	echo "Компиляция через Ninja (это займет время)..."
 	ninja -C build-android-aarch64 install
 
-	if [ ! -f /tmp/turnip-$srcfolder/lib/libvulkan_freedreno.so ]; then
+	if [ ! -f /tmp/Turnip Adreno $srcfolder/lib/libvulkan_freedreno.so ]; then
 		echo -e "$red Ошибка сборки! Библиотека .so не найдена. $nocolor" && exit 1
 	fi
 
 	echo "Создание архива с драйвером..."
-	cd /tmp/turnip-$srcfolder/lib
+	cd /tmp/Turnip Adreno $srcfolder/lib
 	cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
-  "name": "$srcfolder turnip-v$BUILD_VERSION",
-  "description": "Сборка для Adreno $srcfolder. Ветка: $srcfolder",
+  "name": "Turnip Adreno $BUILD_VERSION",
+  "description": "Adreno $srcfolder $UILD_VERSION",
   "author": "Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
@@ -204,11 +213,11 @@ EOF
   "libraryName": "libvulkan_freedreno.so"
 }
 EOF
-	zip $workdir/$srcfolder"-turnip-v"$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
+	zip $workdir/$srcfolder" Turnip Adreno "$BUILD_VERSION.zip libvulkan_freedreno.so meta.json
 	cd -
 	
-	if [ -f $workdir/$srcfolder"-turnip-v"$BUILD_VERSION.zip ]; then
-		echo -e "$green Архив успешно создан: $workdir/$srcfolder"-turnip-v"$BUILD_VERSION.zip $nocolor"
+	if [ -f $workdir/$srcfolder" Turnip Adreno "$BUILD_VERSION.zip ]; then
+		echo -e "$green Архив успешно создан: $workdir/$srcfolder" Turnip Adreno "$BUILD_VERSION.zip $nocolor"
 	else
 		echo -e "$red Не удалось упаковать архив! $nocolor"
 	fi
