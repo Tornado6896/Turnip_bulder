@@ -183,9 +183,7 @@ EOF
 		-Dgbm=enabled \
 		-Dgles1=enabled \
 		-Dgles2=enabled \
-		-Dglx=dri \
-
-
+		-Dglx=dri 
 
 #===============================================================================
 # 8) Install built libraries from staging
