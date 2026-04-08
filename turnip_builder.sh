@@ -193,7 +193,7 @@ EOF
         -Dplatforms=android \
         -Dvideo-codecs= \
         -Dplatform-sdk-version="$sdkver" \
-       # -Dandroid-stub=true \
+        -Dandroid-stub=true \
         -Dgallium-drivers= \
         -Dvulkan-drivers=freedreno \
         -Dvulkan-beta=true \
@@ -201,7 +201,7 @@ EOF
         -Degl=disabled \
         -Dandroid-libbacktrace=disabled \
         --reconfigure
-
+	cat -n src/android_stub/sync_stub.cpp | head -35
     echo "Компиляция через Ninja (это займет время)..."
     ninja -C build-android-aarch64 install
 
