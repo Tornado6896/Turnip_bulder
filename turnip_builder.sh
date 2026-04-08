@@ -122,7 +122,7 @@ prepare_workdir() {
     git clone --branch "$srcfolder" --depth=1 "$mesasrc" "$srcfolder"
     cd "$srcfolder"
 	
- 	cat > include/android_stub/sync/sync.h << 'EOF'
+ 	cat <<EOF >"include/android_stub/sync/sync.h"
 	#ifndef _ANDROID_SYNC_H
 	#define _ANDROID_SYNC_H
 
