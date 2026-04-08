@@ -75,6 +75,7 @@ choose_repo
 choose_branch
 
 read -p "Введите номер сборки: " BUILD_VERSION
+read -p "Введите Описание: " descr
 clear
 
 run_all() {
@@ -233,7 +234,7 @@ cat <<EOF >"meta.json"
 {
   "schemaVersion": 1,
   "name": "Turnip $srcfolder $BUILD_VERSION",
-  "description": "Turnip $srcfolder $BUILD_VERSION",
+  "description": "$descr",
   "author": "Tornado6896",
   "packageVersion": "1",
   "vendor": "Mesa",
