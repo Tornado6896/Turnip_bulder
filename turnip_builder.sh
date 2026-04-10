@@ -15,7 +15,7 @@ sdkver="35"
 # Доступные репозитории
 declare -A REPOS=(
 	[1]="https://github.com/Tornado6896/mesa.git"
-	[2]=https://gitlab.freedesktop.org/mesa/mesa.git
+	[2]="https://gitlab.freedesktop.org/mesa/mesa.gi"
 )
 
 # Доступные ветки (зависят от репозитория, но для простоты оставим общие)
