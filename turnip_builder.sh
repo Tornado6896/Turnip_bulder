@@ -15,12 +15,13 @@ sdkver="35"
 # Доступные репозитории
 declare -A REPOS=(
 	[1]="https://github.com/Tornado6896/mesa.git"
+	[2]="https://gitlab.freedesktop.org/mesa/mesa"
 )
 
 # Доступные ветки (зависят от репозитория, но для простоты оставим общие)
 declare -A BRANCHES=(
     [1]="a825"
-    [2]="a829"
+    [2]="mesa"
 )
 
 # Функция выбора репозитория
