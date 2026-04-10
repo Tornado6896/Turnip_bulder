@@ -201,15 +201,11 @@ EOF
         -Dandroid-libbacktrace=disabled \
         --reconfigure
 
-   # Применяем патч только для репозитория 2 (gitlab.freedesktop.org)
 if [[ "${repo_choice}" == "2" ]]; then
-    PATCH_DIR="$workdir/patches"
-    if [ -f "$PATCH_DIR" ]; then
-        echo "Применение патча tu_gen825.patch для репозитория 2..."
-        patch -p1 < "$PATCH_DIR/tu_a825.patch"
-    else
-        echo "Предупреждение: Патч не найден, сборка продолжается без него."
-    fi
+    # Копируем подготовленные файлы
+    cp "$workdir/patches/freedreno_devices.py" src/freedreno/common/freedreno_devices.py
+    cp "$workdir/patches/freedreno_noop.c" src/freedreno/drm-shim/freedreno_noop.c
+    echo "Файлы для A825 заменены."
 fi
 
     echo "Компиляция через Ninja (это займет время)..."
