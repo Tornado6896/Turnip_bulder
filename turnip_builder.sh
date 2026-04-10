@@ -204,7 +204,7 @@ EOF
 if [[ "${repo_choice}" == "2" ]]; then
     # Копируем подготовленные файлы
 	gpuid=A8XX
-	PATCH_dir="workdir/patches"
+	PATCH_dir="$workdir/patches"
 	patch -p1 < "$PATCH_dir/tu8_kgsl_26.patch"
     cp "$workdir/patches/freedreno_devices.py" src/freedreno/common/freedreno_devices.py
     cp "$workdir/patches/freedreno_noop.c" src/freedreno/drm-shim/freedreno_noop.c
