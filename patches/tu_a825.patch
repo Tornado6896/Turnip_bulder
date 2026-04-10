@@ -166,6 +166,9 @@ index 1234567..abcdefg 100644
 +         raw_magic_regs = a825_raw_magic_regs,
 +     ))
 
+
+-- 
+
 diff --git a/src/freedreno/drm-shim/freedreno_noop.c b/src/freedreno/drm-shim/freedreno_noop.c
 index 7654321..zyxwvut 100644
 --- a/src/freedreno/drm-shim/freedreno_noop.c
