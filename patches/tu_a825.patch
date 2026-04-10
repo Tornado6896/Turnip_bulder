@@ -16,8 +16,7 @@ diff --git a/src/freedreno/common/freedreno_devices.py b/src/freedreno/common/fr
 index 1234567..abcdefg 100644
 --- a/src/freedreno/common/freedreno_devices.py
 +++ b/src/freedreno/common/freedreno_devices.py
-@@ -1250,7 +1250,149 @@ a8xx_base = GPUProps(
-         has_salu_int_narrowing_quirk = True
+@@ -2000,0 +2000,150 @@
  )
 +
 + # ----------------------------------------------------------------------
