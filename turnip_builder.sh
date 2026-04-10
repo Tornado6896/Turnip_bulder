@@ -201,15 +201,16 @@ EOF
         -Dandroid-libbacktrace=disabled \
         --reconfigure
 
-    # Применяем патч только для репозитория 2 (gitlab.freedesktop.org)
-    if [[ "${repo_choice}" == "2" ]]; then
-        if [ -f "patches/tu_gen825.patch" ]; then
-            echo "Применение патча tu_gen825.patch для репозитория 2..."
-            patch -p1 < patches/tu_gen825.patch
-        else
-            echo "Предупреждение: Патч не нужен сборка не из mesa, пропускаем"
-        fi
+   # Применяем патч только для репозитория 2 (gitlab.freedesktop.org)
+if [[ "${repo_choice}" == "2" ]]; then
+    PATCH_DIR="$workdir/patches"
+    if [ -f "$PATCH_DIR" ]; then
+        echo "Применение патча tu_gen825.patch для репозитория 2..."
+        patch -p1 < "$PATCH_DIR/tu_a825.patch"
+    else
+        echo "Предупреждение: Патч не найден, сборка продолжается без него."
     fi
+fi
 
     echo "Компиляция через Ninja (это займет время)..."
     ninja -C build-android-aarch64 install
